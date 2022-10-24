@@ -1,34 +1,36 @@
-
-body{
-  background-color: rgb(65, 65, 65);
+body {
+  background-color: rgb(52, 51, 51);
 }
 
-header{
-  border-bottom: 0.25rem ;
+header {
+  border-bottom: 0.125rem;
   border-style: solid;
   color: rgb(179, 179, 179);
-  margin-top: 1rem;
-  padding-bottom: 1rem;
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-.navigationTop{
- display: flex; 
- justify-content: center;
-}
-
-.navigationTop li a{
-  text-decoration: none;
-  color:rgb(179, 179, 179);
-  font-size: 3rem;
-}
-
-.container{
-  display: flex; 
+.navigationTop {
+  display: flex;
   justify-content: center;
-  margin-top: 43rem;
 }
 
-.container h1{
-  font-size: 20rem;
-  color:rgb(179, 179, 179);
+.navigationTop li a {
+  text-decoration: none;
+  color: rgb(179, 179, 179);
+  font-size: 1.5rem;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 17.5rem;
+}
+
+.container h1 {
+  font-size: 12.5rem;
+  color: rgb(179, 179, 179);
+}
+.container h1 i {
+  font-size: 3rem;
 }
