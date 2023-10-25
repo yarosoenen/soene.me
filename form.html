@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Question Form</title>
+    <link href='https://fonts.googleapis.com/css?family=Fjalla One' rel='stylesheet'>
+</head>
+<body>
+    <main>
+    <h1>Vraag uw product aan</h1>
+    <div class="flex-container">
+    <div>
+    <form id="question-form">
+        <div id="question1-container">
+            <div class="question">
+                <label for="question1"> Welke type net?</label>
+                <select id="question1" name="question1">
+                    <option value="" selected>Choose an option</option>
+                    <option value="Consumer nets">Consumer nets</option>
+                    <option value="Pallet wrap nets">Pallet wrap nets</option>
+                    <option value="Sparnetten">Sparnetten</option>
+                    <option value="Trailer nets">Trailer nets</option>
+                    <option value="Wijn netten">Wijn netten</option>
+                </select>
+            </div>
+
+            <div class="question" id="question2-container">
+                <label for="question2">welke soort net?</label>
+                <select id="question2" name="question2">
+                    <option value="" selected>Choose an option</option>
+                </select>
+            </div>
+
+            <div class="question" id="question3-container">
+                <label for="question3">Hoe groot?</label>
+                <select id="question3" name="question3">
+                    <option value="" selected>Choose an option</option>
+                </select>
+            </div>
+
+        </div>
+    </form>
+    <button type="button" id="submit-button">Doorgaan</button>
+</div>
+    <div id="price-calculator">
+            <h3>Overzicht</h3>
+            <p>Type:     <span id="type"></span></p>
+            <p>Soort:     <span id="kind"></span></p>
+            <p>Grootte:     <span id="size"></span></p>
+            
+            <h4>Artikel: <span id="price"></span></h4>
+    </div>
+
+</div>
+<form id="personal-data">
+    <div class="question" id="question4-container" style="display: none;">
+        <label for="question4">Uw persoonlijke informatie</label>
+        <input type="text" id="personal-data-name" name="personal-data-name" placeholder="naam">
+        <input type="text" id="personal-data-email" name="personal-data-email" placeholder="e-mail">
+        <input type="text" id="personal-data-number" name="personal-data-number" placeholder="nummer">
+    </div>
+</form>
+
+<button type="button" id="send-in-button" style="display: none;">Finish</button>
+
+    <div id="thank-you-screen" style="display: none;">
+        <h2>Bedankt voor het invullen van het formulier!</h2>
+    </div>
+</main>
+
+    <script>
+        const form = document.getElementById('question-form');
+        const submitButton = document.getElementById('submit-button');
+        const sendInButton = document.getElementById('send-in-button');
+        const thankYouScreen = document.getElementById('thank-you-screen');
+
+        const typeSpan = document.getElementById('type');
+        const kindSpan = document.getElementById('kind');
+        const sizeSpan = document.getElementById('size');
+        const priceSpan = document.getElementById('price');
+
+        const questionOptions = {
+            'Consumer nets': ['choose an option','Aardappelnetten', 'Fruitnetten', 'Netverpakkingen'],
+            'Pallet wrap nets': ['choose an option','doos', 'pallet'],
+            'Sparnetten': ['choose an option','smallmesh'],
+            'Trailer nets': ['choose an option','Trailernet'],
+            'Wijn netten': ['choose an option','GMblue','GMmono',],
+        };
+        const questionOptions2 = {
+            Aardappelnetten: ['S', 'M', 'L'],
+            Fruitnetten: ['S', 'M', 'L'],
+            Netverpakkingen: ['S', 'M', 'L'],
+
+            doos: ['choose an option','420 x 280 x 530mm'],
+            pallet: ['choose an option','42 dozen'],
+
+            smallmesh: ['choose an option','ø20cm', 'ø25cm', 'ø31cm','ø34cm','ø45cm','ø55cm', 'ø65cm'],
+
+            Trailernet: ['choose an option','1.6 x 2.5m','2.0 x 3.0m','2.0 x 3.5m','2.0 x 4.0m','2.5 x 4.5m','2.0 x 3.0m','2.0 x 3.5m','2.5 x 4.0m','2.5 x 4.5m'],
+
+            GMblue: ['choose an option','0.90m x 250m', '1.20m x 250m'],
+            GMmono: ['choose an option','0.90m x 250m', '1.20m x 250m'],
+
+        };
+
+        const articleNumbers = {
+            'Consumer nets': {
+                'Aardappelnetten': {
+                    'S': 'Article Number 1',
+                    'M': 'Article Number 2',
+                    'L': 'Article Number 3',
+                },
+                'Fruitnetten': {
+                    'S': 'Article Number 4',
+                    'M': 'Article Number 5',
+                    'L': 'Article Number 6',
+                },
+                'Netverpakkingen': {
+                    'S': 'Article Number 7',
+                    'M': 'Article Number 8',
+                    'L': 'Article Number 9',
+                },
+            },
+            'Pallet wrap nets': {
+                'doos': {
+                    '420 x 280 x 530mm': 'SN001',
+                },
+                'pallet': {
+                    '42 dozen': 'SN002',
+                },
+            },
+            'Sparnetten': {
+                'smallmesh': {
+                    'ø20cm': 'STN001',
+                    'ø25cm': 'STN002',
+                    'ø31cm': 'STN003',
+                    'ø34cm': 'STN004',
+                    'ø45cm': 'STN005',
+                    'ø55cm': 'STNG002',
+                    'ø65cm': 'STNG003',
+                },
+            },
+
+            'Trailer nets': {
+                'Trailernet': {
+                    '1.6 x 2.5m': 'TN001',
+                    '2.0 x 3.0m': 'TN002',
+                    '2.0 x 3.5m': 'TN003',
+                    '2.5 x 4.0m': 'TN004',
+                    '2.5 x 4.5m': 'TN005',
+
+                    '2.0 x 3.0m': 'TN006',
+                    '2.0 x 3.5m': 'TN007',
+                    '2.5 x 4.0m': 'TN008',
+                    '2.5 x 4.5m': 'TN009',
+                },
+            },
+            'Wijn netten': {
+                'GMblue': {
+                    '0.90m x 250m': 'SWN001',
+                    '1.20m x 250m': 'SWN002',
+                },
+                'GMmono': {
+                    '0.90m x 250m': 'SWN003',
+                    '1.20m x 250m': 'SWN004',
+                },
+            },
+        };
+
+        const selectElements = form.querySelectorAll('select');
+        let selectedAnswers = [];
+
+        function updateOptions(select, options) {
+            select.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                select.appendChild(optionElement);
+            });
+        }
+
+        function nameIsValid(name) {
+            return /^[A-Za-z\s\-\']+$/.test(name);
+        }
+
+        function emailIsValid(email) {
+            return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+        }
+
+        function numberIsValid (number){
+            return /^(\+32|0)([1-9]\d{0,1}|\(0\)[1-9]\d{0,1})\d{3}\s?\d{2}\s?\d{2}$/.test(number);
+        }
+
+        submitButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            selectedAnswers = [];
+
+            let selectedValue1 = selectElements[0].value;
+            let selectedValue2 = selectElements[1].value;
+            let selectedValue3 = selectElements[2].value;
+
+            let x = document.getElementById("question3").value.toString();
+            if(x == "choose an option"){
+                alert("Please answer the previous questions first.");
+                console.log("x")
+                return;
+            }
+
+                if (selectedValue1 && selectedValue2 && selectedValue3 || selectedValue1 !== "Choose an option" || selectedValue2 !== "Choose an option" || selectedValue3 !== "Choose an option") {
+                    document.getElementById('question4-container').style.display = 'block';
+                    document.getElementById('price-calculator').style.display = 'none';
+                    document.getElementById('question1-container').style.display = 'none';
+                    submitButton.style.display = 'none';
+                    sendInButton.style.display = 'block';
+                } else {
+                    alert("Please answer the previous questions first.");
+                }
+                for (let pair of new FormData(form).entries()) {
+                    selectedAnswers.push(pair[0] + ': ' + pair[1]);
+                }
+        });
+
+        sendInButton.addEventListener('click', function() {
+            const personalData = {
+                name: document.getElementById('personal-data-name').value,
+                email: emailIsValid(document.getElementById('personal-data-email').value),
+                phone: numberIsValid(document.getElementById('personal-data-number').value),
+            };
+
+            if(personalData.name == "" || personalData.email == "" || personalData.phone == ""){
+                alert("Please enter your personal data.");
+                return;
+            }
+
+            const personalDataIsValid = {
+                name: document.getElementById('personal-data-name').value,
+                email: document.getElementById('personal-data-email').value,
+                phone: document.getElementById('personal-data-number').value,
+            };
+
+            const combinedData = {
+                    personalDataIsValid,
+                    selectedAnswers: selectedAnswers,
+                };
+
+            if (combinedData) {
+                fetch('https://formspree.io/f/mdorbgoq', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(combinedData, null, 2),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+                document.getElementById('question4-container').style.display = 'none';
+                sendInButton.style.display = 'none';
+                thankYouScreen.style.display = 'block';
+                setTimeout(function () {
+                    window.location.href = 'https://www.salconettings.com/';
+                }, 5000); // 5 seconds
+            } else {
+                alert("Please enter your personal data.");
+            }
+        });
+
+        selectElements[0].addEventListener('change', function () {
+            typeSpan.textContent = ` ${this.value}`; 
+            kindSpan.textContent = '';
+            sizeSpan.textContent = '';
+            const selectedValue = this.value;
+            const question2Select = selectElements[1];
+            const options = questionOptions[selectedValue] || [];
+            updateOptions(question2Select, options);
+        });
+
+        selectElements[1].addEventListener('change', function () {
+            kindSpan.textContent = `${this.value}`;  
+            const selectedValue = this.value;
+            const question3Select = selectElements[2];
+            const options = questionOptions2[selectedValue] || [];
+            updateOptions(question3Select, options);
+        });
+
+        selectElements[2].addEventListener('change', function () {
+            sizeSpan.textContent = `${this.value}`;
+
+            const selectedType = selectElements[0].value;
+            const selectedKind = selectElements[1].value;
+            const selectedSize = this.value;
+
+            if (selectedType !== "Choose an option" && selectedKind !== "Choose an option" && selectedSize !== "Choose an option") {
+                const articleNumber = articleNumbers[selectedType][selectedKind][selectedSize];
+                priceSpan.textContent = `${articleNumber}`;
+            } else {
+                priceSpan.textContent = '';
+            }
+        });
+
+
+    </script>
+
+    <style>
+    body{
+        background-color: #cf2e2e;
+        text-align: center;
+        font-family: 'Fjalla One';
+        color: white;
+    }
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: white;
+        border-radius: 5rem;
+        padding: 3rem;
+        width: 50%;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top: 5rem;
+    }
+
+    h1{
+        font-size: 3rem;
+        margin-top: 0;
+        text-decoration: underline;
+        color: #cf2e2e;
+    }
+/* -----------QUESTIONS--------- */
+    .flex-container{
+        margin-top: 3rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem
+    }
+
+    .flex-container h3{
+        margin-top: 0;
+    }
+
+    #price-calculator{
+        border-radius: 3rem;
+        margin-bottom: 10rem;
+        padding: 1rem;
+        background-color: #cf2e2e;
+        width: 15rem;
+        height: 17.5rem;
+    }
+
+    #price-calculator h3{
+        font-size: 1.5rem;
+    }
+    #price-calculator h4{
+        font-size: 1.25rem;
+        margin-top: 5rem;
+    }
+    #price-calculator p{
+        font-size: 1.15rem;
+        text-align: left;
+    }
+    #price-calculator span{
+        font-style: italic;
+        text-decoration: none;
+    }
+
+    .question,
+#question2-container,
+#question3-container {
+    margin-bottom: 1rem;
+}
+
+.question option,
+#question2-container option,
+#question3-container option {
+    position: absolute;
+    background-color: #cf2e2e;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
+
+select {
+    width: 100%;
+    background-color: #cf2e2e;
+    color: white;
+    border-radius: 1rem;
+    display: grid;
+    grid-template-areas: "select";
+    padding: 0.5rem;
+}
+select, select::after {
+    grid-area: select;
+}
+
+label{
+    font-size: 1.5rem;
+    color: #cf2e2e;
+}
+.question label,
+#question2-container label
+{
+    margin-left: -7rem;
+}
+
+#question3-container label {
+    margin-left: -10rem;
+}
+
+
+/* ---------PERSONAL DATA------------ */
+
+#personal-data {
+    margin-top: -3.5rem;
+}
+
+#personal-data input {
+    display: block; /* Make the inputs block-level elements */
+    margin-right: 1rem;
+    margin-top: 2rem; /* Add top margin to space them out vertically */
+    width: 100%;
+}
+
+#send-in-button,#submit-button{
+    width: 12.5rem;
+  background-color: #cf2e2e;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+ /* margin-right:6rem ; */
+ margin-bottom: 2rem;
+ align-items: center;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-top: 1.25rem;
+}
+#submit-button:hover,
+#submit-button:focus,
+#send-in-button:hover,
+#send-in-button:focus {
+  background-color: #bf4d4d;
+}
+
+#submit-button{
+    width: 100%;
+}
+</style>
+</body>
+</html>
